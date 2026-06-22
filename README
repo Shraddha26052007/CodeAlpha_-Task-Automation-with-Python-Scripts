@@ -1,0 +1,68 @@
+# CodeAlpha_-Task-Automation-with-Python-Scripts
+import os
+import shutil
+import re
+import requests
+from bs4 import BeautifulSoup
+
+while True:
+    print("\n===== TASK AUTOMATION =====")
+    print("1. Move JPG Files")
+    print("2. Extract Email Addresses")
+    print("3. Scrape Webpage Title")
+    print("4. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+
+        source = input("Enter source folder: ")
+        destination = input("Enter destination folder: ")
+
+        if not os.path.exists(destination):
+            os.mkdir(destination)
+
+        for file in os.listdir(source):
+            if file.endswith(".jpg"):
+                shutil.move(os.path.join(source, file), destination)
+
+        print("All JPG files moved successfully!")
+
+    elif choice == "2":
+
+        input_file = input("Enter input text file: ")
+        output_file = input("Enter output file: ")
+
+        with open(input_file, "r") as file:
+            text = file.read()
+
+        emails = re.findall(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', text)
+
+        with open(output_file, "w") as file:
+            for email in emails:
+                file.write(email + "\n")
+
+        print("Email addresses extracted successfully!")
+
+    elif choice == "3":
+
+        url = input("Enter webpage URL: ")
+
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        title = soup.title.string
+
+        with open("title.txt", "w") as file:
+            file.write(title)
+
+        print("Webpage title saved successfully!")
+        print("Title:", title)
+
+    elif choice == "4":
+
+        print("Thank You!")
+        break
+
+    else:
+        print("Invalid Choice!")
